@@ -2,15 +2,19 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import { createBrowserRouter, BrowserRouter } from "react-router-dom";
+import {
+  createBrowserRouter,
+  BrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
 import Signup from "./pages/Signup";
-import Login from "./pages/Login"; // Login component
-import JobListings from "./pages/JobListings"; // Job Listings component
-import JobDetails from "./pages/JobDetails"; // Job Details component
-import Profile from "./pages/Profile"; // Profile component
+import Login from "./pages/Login";
+import JobListings from "./pages/JobListings";
+import JobDetails from "./pages/JobDetails";
+import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 
 const router = createBrowserRouter([
@@ -34,9 +38,7 @@ const root = ReactDOM.createRoot(container!);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </Provider>
   </React.StrictMode>
 );

@@ -3,15 +3,12 @@ import { setResponseHeaders } from "../helper/responseHelper";
 import User from "../models/user.model";
 
 export const registerUser = async (req: Request, res: Response) => {
-  console.log("===Register User Controller===", req.body);
   setResponseHeaders(res);
 
   try {
     const { name, email, password } = req.body;
     const user = await User.create({ name, email, password });
-    const { password: _, ...userWithoutPassword } = user.toObject();
-
-    res.status(201).send(userWithoutPassword);
+    res.status(201).send(user);
   } catch (error) {
     console.log("Error in registering user: ", error);
     res.status(400).send(error);
@@ -20,7 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   setResponseHeaders(res);
-  console.log("===Register User Controller===", req.body);
+
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email }).populate("jobs");
@@ -37,8 +34,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // generate token
     const token = await user.generateToken();
-    const { password: _, ...userWithoutPassword } = user.toObject();
-    res.status(200).send({ user: userWithoutPassword, token });
+    res.status(200).send({ user, token });
   } catch (error) {
     console.log("Error in login user: ", error);
     res.status(400).send(error);
@@ -50,13 +46,7 @@ export const getUser = async (req: Request, res: Response) => {
 
   try {
     const user = await User.findById(req.params.id).populate("jobs");
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-
-    const { password: _, ...userWithoutPassword } = user.toObject();
-
-    res.status(200).send(userWithoutPassword);
+    res.status(200).send(user);
   } catch (error) {
     console.log("Error in getting user: ", error);
     res.status(400).send(error);

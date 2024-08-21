@@ -1,3 +1,5 @@
+/// <reference path="../@types/express.d.ts" />
+
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../config/app.config";
 import { Request, Response } from "express";

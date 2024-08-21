@@ -12,7 +12,7 @@ const jobRouter = express.Router();
 
 jobRouter.get("/", getJobs);
 jobRouter.post("/add", auth.verifyToken, admin.verifyAdmin, addJob);
-jobRouter.put("/updateJob", auth.verifyToken, updateJob);
-jobRouter.delete("/deleteJob", auth.verifyToken, deleteJob);
+jobRouter.put("/updateJob", auth.verifyToken, admin.verifyAdmin, updateJob);
+jobRouter.delete("/deleteJob", auth.verifyToken, admin.verifyAdmin, deleteJob);
 
 export default jobRouter;

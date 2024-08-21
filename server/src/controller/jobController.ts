@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { setResponseHeaders } from "../helper/responseHelper";
 import Job from "../models/job.model";
+import { applyJobByUser } from "./userController";
 
 export const getJobs = async (req: Request, res: Response) => {
   setResponseHeaders(res);
@@ -14,6 +15,7 @@ export const getJobs = async (req: Request, res: Response) => {
   }
 };
 
+// Admin Job related controller methods
 export const addJob = async (req: Request, res: Response) => {
   setResponseHeaders(res);
 
@@ -52,6 +54,20 @@ export const deleteJob = async (req: Request, res: Response) => {
     res.status(200).send(job);
   } catch (error) {
     console.log("Error in deleting job: ", error);
+    res.status(400).send(error);
+  }
+};
+
+// User related controller methods
+export const applyJob = async (req: Request, res: Response) => {
+  setResponseHeaders(res);
+  const { userId, jobId } = req.body;
+
+  try {
+    const user = await applyJobByUser(userId, jobId);
+    res.status(200).send(user);
+  } catch (error) {
+    console.log("Error in applying job: ", error);
     res.status(400).send(error);
   }
 };

@@ -1,12 +1,13 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { jwtSecret } from "../config/app.config";
 
 export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  jobs: string[];
+  jobs?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,7 +40,12 @@ const userSchema = new Schema({
   },
 });
 
+// hooks
 userSchema.pre("save", hashPassword);
+
+// user related methods
+userSchema.methods.generateToken = generateToken;
+userSchema.methods.verifyPassword = verifyPassword;
 
 async function hashPassword(this: IUser, next: Function) {
   if (this.password && this.isModified("password")) {
@@ -49,15 +55,16 @@ async function hashPassword(this: IUser, next: Function) {
   next();
 }
 
-async function verifyToken(this: IUser, token: string) {}
-
 async function generateToken(this: IUser) {
   try {
     const payload = { email: this.email, userId: this._id };
-    return await jwt.sign(payload, process.env.JWT_SECRET as string, {
+    return await jwt.sign(payload, jwtSecret as string, {
       expiresIn: "5 mins",
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Error generating token: ", error);
+    throw error;
+  }
 }
 
 async function verifyPassword(this: IUser, password: string) {

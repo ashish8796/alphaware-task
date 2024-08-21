@@ -18,3 +18,8 @@ app.use("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+// DB_PASSWORD = urvY1hmnrV5Q3oYq
+// DB_USERNAME = ashishsainiak
+// PORT = 5500
+// JWT_SECRET = "Thisisjwtsecret"

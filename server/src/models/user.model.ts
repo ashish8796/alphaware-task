@@ -10,6 +10,10 @@ export interface IUser extends Document {
   jobs?: string[];
   createdAt: Date;
   updatedAt: Date;
+
+  // custom methods on model
+  generateToken(): Promise<string>;
+  verifyPassword(password: string): Promise<boolean>;
 }
 
 const userSchema = new Schema({
@@ -76,4 +80,6 @@ async function verifyPassword(this: IUser, password: string) {
   }
 }
 
-export default mongoose.model("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
+
+export default User;

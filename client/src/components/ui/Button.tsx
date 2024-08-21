@@ -10,7 +10,7 @@ interface ButtonProps {
 const Button = ({ type = "button", onClick }: ButtonProps) => {
   return (
     <button type={type} onClick={onClick}>
-      Button
+      Submit
     </button>
   );
 };

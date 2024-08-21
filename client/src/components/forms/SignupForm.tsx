@@ -1,19 +1,38 @@
-import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignupFormData, signupFormSchema } from "../../schemas/authSchema";
 import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "../../types";
 import Button from "../ui/Button";
+import { useDispatch } from "react-redux";
+import { signup } from "../../redux/auth/authActions";
+import { AppDispatch } from "../../redux/store";
+import { useState } from "react";
 
 interface SignupFormProps {}
+
 const SignupForm = (props: SignupFormProps) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+
+  const dispatch = useDispatch<AppDispatch>();
+
   const { handleSubmit, register } = useForm<SignupFormData>({
     resolver: zodResolver(signupFormSchema),
   });
 
-  const onSubmit: SubmitHandler<SignupFormData> = (data) => {
+  const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
     console.log("data", data);
+    setLoading(true);
+    try {
+      const response = await dispatch(signup(data)).unwrap();
+      console.log("Signup successful", response);
+    } catch (error: any) {
+      console.error("Signup failed", error);
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

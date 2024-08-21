@@ -4,8 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CustomFormField from "../CustomFormField";
 import { FormFieldType } from "../../types";
 import Button from "../ui/Button";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { login } from "../../redux/auth/authActions";
+import { useState } from "react";
 
 const LoginForm = () => {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const { handleSubmit, register, formState } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
   });
@@ -14,6 +20,15 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<LoginFormData> = (data) => {
     console.log("data", data);
+    setLoading(true);
+    try {
+      const response = dispatch(login(data)).unwrap();
+      console.log("Login successful", response);
+    } catch (error) {
+      console.error("Login failed", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

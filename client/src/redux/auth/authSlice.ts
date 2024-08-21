@@ -1,20 +1,49 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
+import { AuthState } from "./authTypes";
+import { login, signup, logout } from "./authActions";
 
-export const login = createAsyncThunk("auth/login", async (userData) => {
-  const response = await axios.post("/api/login", userData);
-  return response.data;
-});
+const initialState: AuthState = {
+  user: null,
+  isLoading: false,
+  error: null,
+};
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: { user: null, token: null, isAdmin: false },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Login
+    builder.addCase(login.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
     builder.addCase(login.fulfilled, (state, action) => {
-      state.token = action.payload.token;
-      state.user = action.payload.user;
-      state.isAdmin = action.payload.user.email.endsWith("@alphaware.com");
+      state.isLoading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    });
+
+    // Signup
+    builder.addCase(signup.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(signup.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(signup.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    });
+
+    // Logout
+    builder.addCase(logout.fulfilled, (state) => {
+      state.user = null;
     });
   },
 });

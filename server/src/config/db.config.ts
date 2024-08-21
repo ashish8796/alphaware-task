@@ -6,8 +6,6 @@ import mongoose from "mongoose";
 const dbPassword = process.env.DB_PASSWORD;
 const dbUsername = process.env.DB_USERNAME;
 
-console.log({ dbPassword, dbUsername });
-
 export default async function connectToDB() {
   try {
     console.log("Connecting to DB...");

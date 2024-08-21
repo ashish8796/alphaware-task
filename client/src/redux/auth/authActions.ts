@@ -1,11 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { UserCredentials, UserSignupData } from "../../services/authService";
+import {
+  UserCredentials,
+  UserSignupData,
+  getToken,
+  getCurrentUser,
+} from "../../services/authService";
 import {
   login as loginService,
   signup as signupService,
   logout as logoutService,
 } from "../../services/authService";
 import { User } from "./authTypes";
+import axiosClient from "../../services/axiosClient";
 
 // Async action for user login
 export const login = createAsyncThunk(
@@ -46,3 +52,26 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
     return thunkAPI.rejectWithValue("Logout failed");
   }
 });
+
+// Validate user from cookies and store in Redux
+export const validateUserFromCookies = createAsyncThunk(
+  "auth/validateUserFromCookies",
+  async (_, thunkAPI) => {
+    const token = getToken();
+    if (!token) {
+      return thunkAPI.rejectWithValue("No token found");
+    }
+
+    try {
+      const response = await axiosClient.get("/users/validate", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data.user as User;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue("Token validation failed");
+    }
+  }
+);

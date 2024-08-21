@@ -1,12 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
-import {
-  createBrowserRouter,
-  BrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
@@ -16,18 +11,30 @@ import JobListings from "./pages/JobListings";
 import JobDetails from "./pages/JobDetails";
 import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
+import LandingRedirect from "./components/LandingRedirect";
+import ProtectedRoute from "./components/ProtectedRoute";
+import App from "./App"; // Use the updated App component
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <LandingRedirect />,
+  },
+  {
+    path: "/",
+    element: <App />, // The App component handles initial authentication check
     children: [
       { path: "signup", element: <Signup /> },
       { path: "login", element: <Login /> },
-      { path: "jobs", element: <JobListings /> },
-      { path: "jobs/:jobId", element: <JobDetails /> },
-      { path: "profile", element: <Profile /> },
-      { path: "dashboard", element: <Dashboard /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          { path: "jobs", element: <JobListings /> },
+          { path: "jobs/:jobId", element: <JobDetails /> },
+          { path: "profile", element: <Profile /> },
+          { path: "dashboard", element: <Dashboard /> },
+        ],
+      },
     ],
   },
 ]);

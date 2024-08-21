@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/api/users", userRouter);
 app.use("api/jobs", jobRouter);
 app.use("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Welcome to Job Portal!");
 });
 
 app.listen(port, () => {

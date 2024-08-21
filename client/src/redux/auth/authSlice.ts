@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { AuthState } from "./authTypes";
-import { login, signup, logout } from "./authActions";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AuthState, User } from "./authTypes";
+import { login, signup, logout, validateUserFromCookies } from "./authActions";
 
 const initialState: AuthState = {
   user: null,
@@ -11,7 +11,11 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    loginSuccess(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     // Login
     builder.addCase(login.pending, (state) => {
@@ -45,7 +49,23 @@ const authSlice = createSlice({
     builder.addCase(logout.fulfilled, (state) => {
       state.user = null;
     });
+
+    // Validate User from Cookies
+    builder.addCase(validateUserFromCookies.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(validateUserFromCookies.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.user = action.payload;
+    });
+    builder.addCase(validateUserFromCookies.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+    });
   },
 });
+
+export const { loginSuccess } = authSlice.actions;
 
 export default authSlice.reducer;

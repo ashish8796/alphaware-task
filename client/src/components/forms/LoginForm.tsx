@@ -8,10 +8,13 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { login } from "../../redux/auth/authActions";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
   const { handleSubmit, register, formState } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
   });
@@ -24,6 +27,8 @@ const LoginForm = () => {
     try {
       const response = dispatch(login(data)).unwrap();
       console.log("Login successful", response);
+
+      navigate("/jobs");
     } catch (error) {
       console.error("Login failed", error);
     } finally {
@@ -53,6 +58,11 @@ const LoginForm = () => {
         </div>
         <Button type="submit" />
       </form>
+
+      <div>
+        <p>Don't have an account?</p>
+        <a href="/login">Click here to signup.</a>
+      </div>
     </div>
   );
 };

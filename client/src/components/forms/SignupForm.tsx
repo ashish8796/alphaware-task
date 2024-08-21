@@ -8,10 +8,12 @@ import { useDispatch } from "react-redux";
 import { signup } from "../../redux/auth/authActions";
 import { AppDispatch } from "../../redux/store";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface SignupFormProps {}
 
 const SignupForm = (props: SignupFormProps) => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
 
@@ -27,6 +29,7 @@ const SignupForm = (props: SignupFormProps) => {
     try {
       const response = await dispatch(signup(data)).unwrap();
       console.log("Signup successful", response);
+      navigate("/login");
     } catch (error: any) {
       console.error("Signup failed", error);
       setError(error);
@@ -65,6 +68,11 @@ const SignupForm = (props: SignupFormProps) => {
         </div>
         <Button type="submit" />
       </form>
+
+      <div>
+        <p>Already have an account?</p>
+        <a href="/login">Click here to login.</a>
+      </div>
     </div>
   );
 };

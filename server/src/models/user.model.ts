@@ -63,7 +63,7 @@ async function generateToken(this: IUser) {
   try {
     const payload = { email: this.email, userId: this._id };
     return await jwt.sign(payload, jwtSecret as string, {
-      expiresIn: "5 mins",
+      expiresIn: "7 days",
     });
   } catch (error) {
     console.log("Error generating token: ", error);
